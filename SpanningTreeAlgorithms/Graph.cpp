@@ -14,9 +14,9 @@ void Graph::addEdge(int from, int to, int weight) {
     if (weight <= 0)
         throw std::invalid_argument("Weight must be positive");
 
-    // Проверка на существование ребра
+
     for (const auto& edge : adjacencyList[from]) {
-        if (edge.to == to) return; // Ребро уже существует
+        if (edge.to == to) return;
     }
 
     Edge edge(from, to, weight);
@@ -64,7 +64,7 @@ bool Graph::hasEdge(int from, int to) const {
     if (from < 0 || from >= vertices || to < 0 || to >= vertices)
         return false;
 
-    // Быстрая проверка через список смежности
+
     for (const auto& edge : adjacencyList[from]) {
         if (edge.to == to) return true;
     }
@@ -81,7 +81,7 @@ int Graph::getEdgeWeight(int from, int to) const {
     return -1;
 }
 
-// Генерация случайного графа
+
 Graph Graph::generateRandomGraph(int vertices, int edgesCount, int maxWeight) {
     if (vertices <= 0) throw std::invalid_argument("Number of vertices must be positive");
 
@@ -91,13 +91,13 @@ Graph Graph::generateRandomGraph(int vertices, int edgesCount, int maxWeight) {
     std::uniform_int_distribution<> weightDist(1, maxWeight);
     std::uniform_int_distribution<> vertexDist(0, vertices - 1);
 
-    // Гарантируем связность
+    
     for (int i = 1; i < vertices; ++i) {
         int parent = vertexDist(gen) % i;
         graph.addEdge(parent, i, weightDist(gen));
     }
 
-    // Добавляем оставшиеся ребра
+    
     int maxPossibleEdges = vertices * (vertices - 1) / 2;
     edgesCount = std::min(edgesCount, maxPossibleEdges);
 
@@ -127,7 +127,7 @@ Graph Graph::generateRandomGraph(int vertices, int edgesCount, int maxWeight) {
     return graph;
 }
 
-// Генерация полного графа
+
 Graph Graph::generateCompleteGraph(int vertices, int maxWeight) {
     Graph graph(vertices);
     std::random_device rd;
@@ -143,22 +143,22 @@ Graph Graph::generateCompleteGraph(int vertices, int maxWeight) {
     return graph;
 }
 
-// Генерация разреженного графа
+
 Graph Graph::generateSparseGraph(int vertices, double density, int maxWeight) {
     int maxEdges = vertices * (vertices - 1) / 2;
     int edgesCount = static_cast<int>(maxEdges * density);
-    edgesCount = std::max(edgesCount, vertices - 1); // Минимум для связности
+    edgesCount = std::max(edgesCount, vertices - 1); 
     return generateRandomGraph(vertices, edgesCount, maxWeight);
 }
 
-// Генерация плотного графа
+
 Graph Graph::generateDenseGraph(int vertices, double density, int maxWeight) {
     int maxEdges = vertices * (vertices - 1) / 2;
     int edgesCount = static_cast<int>(maxEdges * density);
     return generateRandomGraph(vertices, edgesCount, maxWeight);
 }
 
-// Генерация дерева
+
 Graph Graph::generateTree(int vertices, int maxWeight) {
     Graph graph(vertices);
     std::random_device rd;
@@ -173,7 +173,7 @@ Graph Graph::generateTree(int vertices, int maxWeight) {
     return graph;
 }
 
-// Генерация сетки
+
 Graph Graph::generateGridGraph(int rows, int cols, int maxWeight) {
     int vertices = rows * cols;
     Graph graph(vertices);
@@ -185,12 +185,12 @@ Graph Graph::generateGridGraph(int rows, int cols, int maxWeight) {
         for (int j = 0; j < cols; ++j) {
             int current = i * cols + j;
 
-            // Правое сосед
+           
             if (j < cols - 1) {
                 graph.addEdge(current, i * cols + (j + 1), weightDist(gen));
             }
 
-            // Нижний сосед
+            
             if (i < rows - 1) {
                 graph.addEdge(current, (i + 1) * cols + j, weightDist(gen));
             }
@@ -200,7 +200,7 @@ Graph Graph::generateGridGraph(int rows, int cols, int maxWeight) {
     return graph;
 }
 
-// Загрузка из файла
+
 Graph Graph::loadFromFile(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) throw std::runtime_error("Cannot open file: " + filename);
@@ -218,7 +218,7 @@ Graph Graph::loadFromFile(const std::string& filename) {
     return graph;
 }
 
-// Сохранение в файл
+
 void Graph::saveToFile(const std::string& filename) const {
     std::ofstream file(filename);
     if (!file.is_open()) throw std::runtime_error("Cannot open file: " + filename);
@@ -229,7 +229,7 @@ void Graph::saveToFile(const std::string& filename) const {
     }
 }
 
-// Проверка связности
+
 bool Graph::isConnected() const {
     if (vertices == 0) return true;
 

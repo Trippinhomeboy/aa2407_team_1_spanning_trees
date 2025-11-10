@@ -29,7 +29,7 @@ private:
     int vertices;
     std::vector<std::vector<Edge>> adjacencyList;
     std::vector<Edge> edges;
-    mutable std::vector<std::vector<int>> adjacencyMatrix; // Кэш матрицы смежности
+    mutable std::vector<std::vector<int>> adjacencyMatrix;
     mutable bool matrixCached = false;
 
     void buildAdjacencyMatrix() const;
@@ -37,22 +37,22 @@ private:
 public:
     Graph(int v);
 
-    // Основные операции
+    
     void addEdge(int from, int to, int weight);
     void addDirectedEdge(int from, int to, int weight);
 
-    // Получение информации
+    
     int getVerticesCount() const { return vertices; }
     int getEdgesCount() const { return edges.size(); }
     const std::vector<Edge>& getEdges() const { return edges; }
     const std::vector<Edge>& getAdjacentEdges(int vertex) const;
     const std::vector<std::vector<int>>& getAdjacencyMatrix() const;
 
-    // Оптимизированные методы
+    
     bool hasEdge(int from, int to) const;
     int getEdgeWeight(int from, int to) const;
 
-    // Генерация графов
+    
     static Graph generateRandomGraph(int vertices, int edges, int maxWeight = 100);
     static Graph generateCompleteGraph(int vertices, int maxWeight = 100);
     static Graph generateSparseGraph(int vertices, double density = 0.1, int maxWeight = 100);
@@ -60,20 +60,20 @@ public:
     static Graph generateTree(int vertices, int maxWeight = 100);
     static Graph generateGridGraph(int rows, int cols, int maxWeight = 100);
 
-    // Загрузка и сохранение
+    
     static Graph loadFromFile(const std::string& filename);
     void saveToFile(const std::string& filename) const;
 
-    // Валидация
+    
     bool isConnected() const;
     bool hasNegativeWeights() const;
 
-    // Вывод
+    
     void printGraph() const;
     void printAdjacencyList() const;
     void printAdjacencyMatrix() const;
 
-    // Утилиты
+    
     int getTotalWeight() const;
     int getMaxDegree() const;
     int getMinDegree() const;
