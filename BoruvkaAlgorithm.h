@@ -1,45 +1,25 @@
-#ifndef BORUVKAALGORITHM_H
-#define BORUVKAALGORITHM_H
-
+#pragma once
+#include "SpanningTreeAlgorithm.h"
 #include <vector>
-#include <string>
-#include <chrono>
 
-// Структура для представления ребра
-struct Edge {
-    int src, dest, weight;
-
-    Edge(int s, int d, int w) : src(s), dest(d), weight(w) {}
-};
-
-// Структура для результатов выполнения алгоритма
-struct BoruvkaResult {
-    std::vector<Edge> mstEdges;
-    int totalWeight;
-    long long executionTimeMicroseconds;
-    bool success;
-    std::string message;
-};
-
-// Предварительное объявление класса Graph
-class Graph;
-
-class BoruvkaAlgorithm {
+class BoruvkaAlgorithm : public SpanningTreeAlgorithm {
 public:
-    // Основной метод для поиска MST
-    static BoruvkaResult findMST(const Graph& graph);
-
-    // Метод для поиска MST с замером времени
-    static BoruvkaResult findMSTWithTimeMeasurement(const Graph& graph);
-
-    // Вспомогательные методы
-    static std::string resultToString(const BoruvkaResult& result);
-    static void printResult(const BoruvkaResult& result);
+    std::string getName() const override { return "Boruvka's Algorithm"; }
+    std::string getTimeComplexity() const override { return "O(E log V)"; }
+    std::string getSpaceComplexity() const override { return "O(V)"; }
 
 private:
-    // Вспомогательные методы для реализации алгоритма
-    static int findComponent(const std::vector<int>& component, int vertex);
-    static void unionComponents(std::vector<int>& component, int comp1, int comp2);
-};
+    SpanningTreeResult execute(const Graph& graph) override;
 
-#endif // BORUVKAALGORITHM_H
+    class UnionFind {
+    private:
+        std::vector<int> parent;
+        std::vector<int> rank;
+
+    public:
+        UnionFind(int n);
+        int find(int x);
+        void unite(int x, int y);
+        bool connected(int x, int y);
+    };
+};
