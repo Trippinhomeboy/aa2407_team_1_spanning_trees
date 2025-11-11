@@ -1,80 +1,37 @@
 #pragma once
 #include <vector>
 #include <iostream>
-#include <string>
-#include <random>
-#include <stdexcept>
-#include <memory>
-#include <fstream>
-#include <queue>
+
+using namespace std;
 
 struct Edge {
-    int from;
-    int to;
-    int weight;
-
-    Edge(int f, int t, int w) : from(f), to(t), weight(w) {}
+    int u, v, weight;
+    Edge(int u, int v, int w) : u(u), v(v), weight(w) {}
 
     bool operator<(const Edge& other) const {
         return weight < other.weight;
     }
 
     bool operator==(const Edge& other) const {
-        return from == other.from && to == other.to && weight == other.weight;
+        return u == other.u && v == other.v && weight == other.weight;
+    }
+
+    bool operator!=(const Edge& other) const {
+        return !(*this == other);
     }
 };
 
 class Graph {
 private:
     int vertices;
-    std::vector<std::vector<Edge>> adjacencyList;
-    std::vector<Edge> edges;
-    mutable std::vector<std::vector<int>> adjacencyMatrix;
-    mutable bool matrixCached = false;
-
-    void buildAdjacencyMatrix() const;
+    vector<Edge> edges;
+    vector<vector<pair<int, int>>> adjacencyList;
 
 public:
-    Graph(int v);
-
-    
-    void addEdge(int from, int to, int weight);
-    void addDirectedEdge(int from, int to, int weight);
-
-    
-    int getVerticesCount() const { return vertices; }
-    int getEdgesCount() const { return edges.size(); }
-    const std::vector<Edge>& getEdges() const { return edges; }
-    const std::vector<Edge>& getAdjacentEdges(int vertex) const;
-    const std::vector<std::vector<int>>& getAdjacencyMatrix() const;
-
-    
-    bool hasEdge(int from, int to) const;
-    int getEdgeWeight(int from, int to) const;
-
-    
-    static Graph generateRandomGraph(int vertices, int edges, int maxWeight = 100);
-    static Graph generateCompleteGraph(int vertices, int maxWeight = 100);
-    static Graph generateSparseGraph(int vertices, double density = 0.1, int maxWeight = 100);
-    static Graph generateDenseGraph(int vertices, double density = 0.9, int maxWeight = 100);
-    static Graph generateTree(int vertices, int maxWeight = 100);
-    static Graph generateGridGraph(int rows, int cols, int maxWeight = 100);
-
-    
-    static Graph loadFromFile(const std::string& filename);
-    void saveToFile(const std::string& filename) const;
-
-    
-    bool isConnected() const;
-    bool hasNegativeWeights() const;
-
-    
+    Graph(int V);
+    void addEdge(int u, int v, int weight);
+    int getVerticesCount() const;
+    const vector<Edge>& getEdges() const;
+    const vector<vector<pair<int, int>>>& getAdjacencyList() const;
     void printGraph() const;
-    void printAdjacencyList() const;
-    void printAdjacencyMatrix() const;
-
-    
-    int getTotalWeight() const;
-    int getMaxDegree() const;
-    int getMinDegree() const;
 };
