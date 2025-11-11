@@ -1,101 +1,82 @@
 #include "BoruvkaAlgorithm.h"
 #include <climits>
-#include <algorithm>
 
-BoruvkaAlgorithm::UnionFind::UnionFind(int n) : parent(n), rank(n, 0) {
-    for (int i = 0; i < n; ++i) {
+vector<Edge> BoruvkaAlgorithm::findMST(const Graph& graph) {
+    int V = graph.getVerticesCount();
+    const auto& edges = graph.getEdges();
+    vector<Edge> mst;
+
+    if (V <= 1) return mst;
+
+    vector<int> parent(V);
+    vector<int> rank(V, 0);
+    for (int i = 0; i < V; i++) {
         parent[i] = i;
     }
-}
 
-int BoruvkaAlgorithm::UnionFind::find(int x) {
-    if (parent[x] != x) {
-        parent[x] = find(parent[x]);
-    }
-    return parent[x];
-}
-
-void BoruvkaAlgorithm::UnionFind::unite(int x, int y) {
-    int rootX = find(x);
-    int rootY = find(y);
-
-    if (rootX != rootY) {
-        if (rank[rootX] < rank[rootY]) {
-            parent[rootX] = rootY;
+    auto find = [&](int x) {
+        while (parent[x] != x) {
+            parent[x] = parent[parent[x]];
+            x = parent[x];
         }
-        else if (rank[rootX] > rank[rootY]) {
-            parent[rootY] = rootX;
+        return x;
+        };
+
+    auto unite = [&](int x, int y) {
+        int rootX = find(x);
+        int rootY = find(y);
+        if (rootX != rootY) {
+            if (rank[rootX] < rank[rootY]) {
+                parent[rootX] = rootY;
+            }
+            else if (rank[rootX] > rank[rootY]) {
+                parent[rootY] = rootX;
+            }
+            else {
+                parent[rootY] = rootX;
+                rank[rootX]++;
+            }
+            return true;
         }
-        else {
-            parent[rootY] = rootX;
-            rank[rootX]++;
-        }
-    }
-}
+        return false;
+        };
 
-bool BoruvkaAlgorithm::UnionFind::connected(int x, int y) {
-    return find(x) == find(y);
-}
+    int components = V;
+    int iterations = 0;
 
-SpanningTreeResult BoruvkaAlgorithm::execute(const Graph& graph) {
-    SpanningTreeResult result;
-    int V = graph.getVerticesCount();
-    const std::vector<Edge>& edges = graph.getEdges();
+    while (components > 1 && iterations < V) {
+        iterations++;
+        vector<int> cheapest(V, -1);
 
-    UnionFind uf(V);
-
-    // Вектор для хранения самого дешевого ребра для каждого компонента
-    std::vector<int> cheapest(V, -1);
-
-    int numTrees = V;
-    result.totalWeight = 0;
-
-    while (numTrees > 1) {
-        // Сбрасываем массив cheapest
-        std::fill(cheapest.begin(), cheapest.end(), -1);
-
-        // Проходим по всем ребрам и находим самое дешевое ребро для каждого компонента
-        for (int i = 0; i < edges.size(); ++i) {
+        for (int i = 0; i < edges.size(); i++) {
             const Edge& edge = edges[i];
-            int set1 = uf.find(edge.from);
-            int set2 = uf.find(edge.to);
+            int compU = find(edge.u);
+            int compV = find(edge.v);
 
-            if (set1 == set2) continue;
-
-            // Обновляем cheapest для set1 (ИСПРАВЛЕННАЯ СТРОКА)
-            if (cheapest[set1] == -1 || edges[cheapest[set1]].weight > edge.weight) {
-                cheapest[set1] = i;
-            }
-
-            // Обновляем cheapest для set2 (ИСПРАВЛЕННАЯ СТРОКА)
-            if (cheapest[set2] == -1 || edges[cheapest[set2]].weight > edge.weight) {
-                cheapest[set2] = i;
+            if (compU != compV) {
+                if (cheapest[compU] == -1 || edges[cheapest[compU]].weight > edge.weight) {
+                    cheapest[compU] = i;
+                }
+                if (cheapest[compV] == -1 || edges[cheapest[compV]].weight > edge.weight) {
+                    cheapest[compV] = i;
+                }
             }
         }
 
-        // Добавляем найденные ребра в остовное дерево
-        bool edgeAdded = false;
-        for (int i = 0; i < V; ++i) {
+        bool added = false;
+        for (int i = 0; i < V; i++) {
             if (cheapest[i] != -1) {
                 const Edge& edge = edges[cheapest[i]];
-                int set1 = uf.find(edge.from);
-                int set2 = uf.find(edge.to);
-
-                if (set1 == set2) continue;
-
-                result.edges.push_back(edge);
-                result.totalWeight += edge.weight;
-                uf.unite(set1, set2);
-                numTrees--;
-                edgeAdded = true;
+                if (unite(edge.u, edge.v)) {
+                    mst.push_back(edge);
+                    components--;
+                    added = true;
+                }
             }
         }
 
-        // Защита от бесконечного цикла для несвязных графов
-        if (!edgeAdded) {
-            break;
-        }
+        if (!added) break;
     }
 
-    return result;
+    return mst;
 }
