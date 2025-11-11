@@ -4,9 +4,10 @@
 #include "Prim/PrimAlgorithm.h"
 #include "Kruskal/KruskalAlgorithm.h"
 #include "Boruvka/BoruvkaAlgorithm.h"
+#include "ReverseDelete/ReverseDeleteAlgorithm.h"
 #include "SecondBestMST/SecondBestMSTAlgorithm.h"
 #include "Timer/Timer.h"
-#include "Tournament/TournamentTable.h"
+#include "Tournament/TourtnamentTable.h"
 
 using namespace std;
 
@@ -32,15 +33,17 @@ void testWithAlgorithm(SpanningTreeAlgorithm& algorithm, const string& testName,
 void runAllAlgorithms(const string& testName, const Graph& graph) {
     tournament.startTest(testName);
 
-    PrimAlgorithm prim;
-    KruskalAlgorithm kruskal;
-    BoruvkaAlgorithm boruvka;
-    SecondBestMSTAlgorithm secondBest;
+    // PrimAlgorithm prim;
+    // KruskalAlgorithm kruskal;
+    // BoruvkaAlgorithm boruvka;
+    // SecondBestMSTAlgorithm secondBest;
+    ReverseDeleteAlgorithm reverseDelete;
 
-    testWithAlgorithm(prim, testName + " (Prim)", graph);
-    testWithAlgorithm(kruskal, testName + " (Kruskal)", graph);
-    testWithAlgorithm(boruvka, testName + " (Boruvka)", graph);
-    testWithAlgorithm(secondBest, testName + " (Second-Best)", graph);
+    // testWithAlgorithm(prim, testName + " (Prim)", graph);
+    // testWithAlgorithm(kruskal, testName + " (Kruskal)", graph);
+    // testWithAlgorithm(boruvka, testName + " (Boruvka)", graph);
+    // testWithAlgorithm(secondBest, testName + " (Second-Best)", graph);
+    testWithAlgorithm(reverseDelete, testName + " (Reverse Delete)", graph);
 
     tournament.printTable();
     cout << "----------------------------------------\n\n";

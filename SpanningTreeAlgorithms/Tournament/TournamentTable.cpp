@@ -1,4 +1,4 @@
-#include "TournamentTable.h"
+#include "../Tournament/TourtnamentTable.h"
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
